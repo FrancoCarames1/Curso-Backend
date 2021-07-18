@@ -60,8 +60,8 @@ class Usuario {
 
 let Usuario1 = new Usuario("Mirtha","Legrand",[{nombre:"Cuando conocí al recién nacido Jesus" , autor:"Mirtha Legrand"}],["Pepe","Pepo"])
 
-// Usuario1.getFullName()
-// Usuario1.addMascota("Maria Marta")
-// Usuario1.countMascotas()
+Usuario1.getFullName()
+Usuario1.addMascota("Maria Marta")
+Usuario1.countMascotas()
 Usuario1.addBook("Libro Nuevo", "Peron")
 Usuario1.getBookNames()
