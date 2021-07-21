@@ -17,14 +17,13 @@
 // getBookNames(): String[]. Retorna un array con sólo los nombres del array de libros del usuario.
 // 4) Crear un objeto llamado usuario con valores arbitrarios e invocar todos sus métodos.
 
-const arrayDeTitulos = []
-
 class Usuario {
     constructor(nombre, apellido, libros, mascotas) {
         this.nombre = nombre
         this.apellido = apellido
         this.libros = libros
-        this.mascotas = mascotas
+        this.libros = Array.isArray(libros) ? libros : [];
+        this.mascotas = Array.isArray(mascotas) ? mascotas : [];
     }
 
     getFullName(){
@@ -34,34 +33,33 @@ class Usuario {
     addMascota(mascotaNueva){
         if(Array.isArray(this.mascotas)){
             this.mascotas.push(mascotaNueva)
-            console.log(this.mascotas)
+            console.log("Se agregó la mascota correctamente")
         }else{
             console.log("No me estas pasando un array maestro")
         }
     }
 
     countMascotas(){
-        console.log(this.mascotas.length)
+        return(this.mascotas.length)
     }
 
     addBook(titulo,autorDelLibro){
         this.libros.push({nombre: titulo, autor: autorDelLibro})
-        console.log(this.libros[this.libros.length - 1])
     }
 
     getBookNames(){
-        for (let i= 0; i< this.libros.length; i++){
-            let objetos =this.libros[i]
-            arrayDeTitulos.push(objetos.nombre)
-        }
-        console.log(arrayDeTitulos)
+        const arrayDeTitulos = [];
+        this.libros.array.forEach(element => {
+            arrayDeTitulos.push(element.nombre)
+        });
+        return(arrayDeTitulos)
     }
 }
 
 let Usuario1 = new Usuario("Mirtha","Legrand",[{nombre:"Cuando conocí al recién nacido Jesus" , autor:"Mirtha Legrand"}],["Pepe","Pepo"])
 
 console.log(Usuario1.getFullName())
-Usuario1.addMascota("Maria Marta")
-Usuario1.countMascotas()
-Usuario1.addBook("Libro Nuevo", "Peron")
-Usuario1.getBookNames()
+console.log(Usuario1.addMascota("Maria Marta"))
+console.log(Usuario1.countMascotas())
+console.log(Usuario1.addBook("Libro Nuevo", "Peron"))
+console.log(Usuario1.getBookNames())
