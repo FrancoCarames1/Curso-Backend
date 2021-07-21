@@ -45,6 +45,7 @@ class Usuario {
 
     addBook(titulo,autorDelLibro){
         this.libros.push({nombre: titulo, autor: autorDelLibro})
+        console.log(this.libros)
     }
 
     getBookNames(){
@@ -59,7 +60,7 @@ class Usuario {
 let Usuario1 = new Usuario("Mirtha","Legrand",[{nombre:"Cuando conocí al recién nacido Jesus" , autor:"Mirtha Legrand"}],["Pepe","Pepo"])
 
 console.log(Usuario1.getFullName())
-console.log(Usuario1.addMascota("Maria Marta"))
+Usuario1.addMascota("Maria Marta")
 console.log(Usuario1.countMascotas())
-console.log(Usuario1.addBook("Libro Nuevo", "Peron"))
+Usuario1.addBook("Libro Nuevo", "Peron")
 console.log(Usuario1.getBookNames())
