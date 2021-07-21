@@ -63,5 +63,5 @@ let Usuario1 = new Usuario("Mirtha","Legrand",[{nombre:"Cuando conocí al recié
 Usuario1.getFullName()
 Usuario1.addMascota("Maria Marta")
 Usuario1.countMascotas()
-Usuario1.addBook("Libro Nuevo", "Peron")
+Usuario1.addBook("Libro  Nuevo", "Peron")
 Usuario1.getBookNames()
