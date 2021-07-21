@@ -49,7 +49,7 @@ class Usuario {
 
     getBookNames(){
         const arrayDeTitulos = [];
-        this.libros.array.forEach(element => {
+        this.libros.forEach(element => {
             arrayDeTitulos.push(element.nombre)
         });
         return(arrayDeTitulos)
