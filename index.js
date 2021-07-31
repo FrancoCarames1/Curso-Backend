@@ -12,7 +12,7 @@ class Desafio2 {
             console.log(error);
         }
     }
-    getById(numero){
+    async getById(numero){
         let array = this.getAll();
         let animeBuscado = array.find(x => x.id === numero);
         if (animeBuscado === undefined){
@@ -21,7 +21,7 @@ class Desafio2 {
             return(animeBuscado)
         }
     }
-    deleteById(numero){
+    async deleteById(numero){
         let array = this.getAll();
         let posicionAnimeBuscado = array.findIndex(x => x.id === numero);
         if(posicionAnimeBuscado === -1){
@@ -31,23 +31,23 @@ class Desafio2 {
             console.log(array);
             let pasarloAJSON = JSON.stringify(array);
             try{
-                fs.promises.writeFile(this.nombreDeArchivo, pasarloAJSON);
+                await fs.promises.writeFile(this.nombreDeArchivo, pasarloAJSON);
             } catch (error){
                 console.log("Error");
             }
         }
     }
-    deleteAll(){
+    async deleteAll(){
         try{
-            fs.promises.writeFile(this.nombreDeArchivo, "[]");
+            await fs.promises.writeFile(this.nombreDeArchivo, "[]");
             console.log("Borrado");
         }catch (error){
             console.log("Error");
         }
     }
-    save(objeto){
+    async save(objeto){
         let array = this.getAll();
-        let idMax = -1;
+        let idMax = 0;
         array.forEach(e => {
             if(e.id > idMax){
                 idMax = e.id;
@@ -62,7 +62,7 @@ class Desafio2 {
         array.push(objetoAAgregar);
         let pasarloAJSON = JSON.stringify(array);
         try{
-            fs.promises.writeFile(this.nombreDeArchivo, pasarloAJSON);
+            await fs.promises.writeFile(this.nombreDeArchivo, pasarloAJSON);
             return(objetoAAgregar.id);
         } catch (error){
             console.log("Error");
@@ -70,8 +70,8 @@ class Desafio2 {
     }
 }
 let animes = new Desafio2("archivo.txt");
-console.log(animes.getById);
-console.log(animes.getAll);
-console.log("Id del anime agregado:",animes.save({title:"Boku No Hero Academia", mainCharacter:"Deku"}));
+console.log("Anime obtenido por id:",animes.getById(3));
+console.log("Animes:",animes.getAll());
+//console.log("Id del anime agregado:",animes.save({title:"Boku No Hero Academia", mainCharacter:"Deku"}));
 //animes.deleteById(4);
 //animes.deleteAll();
