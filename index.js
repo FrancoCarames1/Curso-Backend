@@ -1,66 +1,77 @@
-// Consigna: 
-// 1) Declarar una clase Usuario
-
-// 2) Hacer que Usuario cuente con los siguientes atributos:
-// nombre: String
-// apellido: String
-// libros: Object[]
-// mascotas: String[]
-
-// Los valores de los atributos se deberán cargar a través del constructor, al momento de crear las instancias.
-
-// 3) Hacer que Usuario cuente con los siguientes métodos:
-// getFullName(): String. Retorna el completo del usuario. Utilizar template strings.
-// addMascota(String): void. Recibe un nombre de mascota y lo agrega al array de mascotas.
-// countMascotas(): Number. Retorna la cantidad de mascotas que tiene el usuario.
-// addBook(String, String): void. Recibe un string 'nombre' y un string 'autor' y debe agregar un objeto: { nombre: String, autor: String } al array de libros.
-// getBookNames(): String[]. Retorna un array con sólo los nombres del array de libros del usuario.
-// 4) Crear un objeto llamado usuario con valores arbitrarios e invocar todos sus métodos.
-
-class Usuario {
-    constructor(nombre, apellido, libros, mascotas) {
-        this.nombre = nombre
-        this.apellido = apellido
-        this.libros = libros
-        this.libros = Array.isArray(libros) ? libros : [];
-        this.mascotas = Array.isArray(mascotas) ? mascotas : [];
+const fs = require('fs');
+class Desafio2 {
+    constructor(nombreDeArchivo){
+        this.nombreDeArchivo = nombreDeArchivo;
     }
-
-    getFullName(){
-        return(`${this.nombre} ${this.apellido}`)
-    }
-
-    addMascota(mascotaNueva){
-        if(Array.isArray(this.mascotas)){
-            this.mascotas.push(mascotaNueva)
-            console.log("Se agregó la mascota correctamente")
-        }else{
-            console.log("No me estas pasando un array maestro")
+    getAll(){
+        try{
+            let data = fs.readFileSync(this.nombreDeArchivo, 'UTF-8');
+        let transformandoEnArray = JSON.parse(data);
+        return (transformandoEnArray);
+        } catch (error){
+            console.log(error);
         }
     }
-
-    countMascotas(){
-        return(this.mascotas.length)
+    getById(numero){
+        let array = this.getAll();
+        let animeBuscado = array.find(x => x.id === numero);
+        if (animeBuscado === undefined){
+            console.log("Error, no hay ningún anime con ese id");
+        }else{
+            return(animeBuscado)
+        }
     }
-
-    addBook(titulo,autorDelLibro){
-        this.libros.push({nombre: titulo, autor: autorDelLibro})
-        console.log(this.libros)
+    deleteById(numero){
+        let array = this.getAll();
+        let posicionAnimeBuscado = array.findIndex(x => x.id === numero);
+        if(posicionAnimeBuscado === -1){
+            console.log("Error, no existe un anime con ese id")
+        }else{
+            array.splice(posicionAnimeBuscado,1);
+            console.log(array);
+            let pasarloAJSON = JSON.stringify(array);
+            try{
+                fs.promises.writeFile(this.nombreDeArchivo, pasarloAJSON);
+            } catch (error){
+                console.log("Error");
+            }
+        }
     }
-
-    getBookNames(){
-        const arrayDeTitulos = [];
-        this.libros.forEach(element => {
-            arrayDeTitulos.push(element.nombre)
+    deleteAll(){
+        try{
+            fs.promises.writeFile(this.nombreDeArchivo, "[]");
+            console.log("Borrado");
+        }catch (error){
+            console.log("Error");
+        }
+    }
+    save(objeto){
+        let array = this.getAll();
+        let idMax = -1;
+        array.forEach(e => {
+            if(e.id > idMax){
+                idMax = e.id;
+            }
         });
-        return(arrayDeTitulos)
+        let objetoAAgregar = Object.defineProperty(objeto, "id",{
+            value: idMax+1,
+            writable: true,
+            enumerable: true,
+            configurable: true
+        });
+        array.push(objetoAAgregar);
+        let pasarloAJSON = JSON.stringify(array);
+        try{
+            fs.promises.writeFile(this.nombreDeArchivo, pasarloAJSON);
+            return(objetoAAgregar.id);
+        } catch (error){
+            console.log("Error");
+        }
     }
 }
-
-let Usuario1 = new Usuario("Mirtha","Legrand",[{nombre:"Cuando conocí al recién nacido Jesus" , autor:"Mirtha Legrand"}],["Pepe","Pepo"])
-
-console.log(Usuario1.getFullName())
-Usuario1.addMascota("Maria Marta")
-console.log(Usuario1.countMascotas())
-Usuario1.addBook("Libro Nuevo", "Peron")
-console.log(Usuario1.getBookNames())
+let animes = new Desafio2("archivo.txt");
+console.log(animes.getById);
+console.log(animes.getAll);
+console.log("Id del anime agregado:",animes.save({title:"Boku No Hero Academia", mainCharacter:"Deku"}));
+//animes.deleteById(4);
+//animes.deleteAll();

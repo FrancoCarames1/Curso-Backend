@@ -1,0 +1,17 @@
+[
+    {
+        "title": "One Punch",
+        "mainCharacter": "Saitama",
+        "id": 1
+    },
+    {
+        "title": "One Piece",
+        "mainCharacter": "Luffy",
+        "id": 2
+    },
+    {
+        "title": "Jujutsu no Kaisen",
+        "mainCharacter": "Yuji",
+        "id":3
+    }
+]
