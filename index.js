@@ -1,77 +1,92 @@
-const fs = require('fs');
+const fs = require("fs");
 class Desafio2 {
-    constructor(nombreDeArchivo){
+    constructor(nombreDeArchivo) {
         this.nombreDeArchivo = nombreDeArchivo;
+        this.data = []
     }
-    getAll(){
-        try{
-            let data = fs.readFileSync(this.nombreDeArchivo, 'UTF-8');
-        let transformandoEnArray = JSON.parse(data);
-        return (transformandoEnArray);
-        } catch (error){
-            console.log(error);
+    async getAll() {
+        try {
+            let info = await fs.promises.readFile(this.nombreDeArchivo, "UTF-8");
+            if (info){
+                this.data =  JSON.parse(info);
+                return (this.data)
+            }
+        } catch (error) {
+            return
         }
     }
-    async getById(numero){
-        let array = this.getAll();
-        let animeBuscado = array.find(x => x.id === numero);
-        if (animeBuscado === undefined){
+    async getById(numero) {
+        let array = await this.getAll();
+        let animeBuscado = array.find((x) => x.id === numero);
+        if (animeBuscado === undefined) {
             console.log("Error, no hay ningún anime con ese id");
-        }else{
-            return(animeBuscado)
+        } else {
+            return animeBuscado;
         }
     }
-    async deleteById(numero){
-        let array = this.getAll();
-        let posicionAnimeBuscado = array.findIndex(x => x.id === numero);
-        if(posicionAnimeBuscado === -1){
-            console.log("Error, no existe un anime con ese id")
-        }else{
-            array.splice(posicionAnimeBuscado,1);
-            console.log(array);
+    async deleteById(numero) {
+        let array = await this.getAll();
+        let posicionAnimeBuscado = array.findIndex((x) => x.id === numero);
+        if (posicionAnimeBuscado === -1) {
+            console.log("Error, no existe un anime con ese id");
+        } else {
+            array.splice(posicionAnimeBuscado, 1);
             let pasarloAJSON = JSON.stringify(array);
-            try{
+            try {
                 await fs.promises.writeFile(this.nombreDeArchivo, pasarloAJSON);
-            } catch (error){
+            } catch (error) {
                 console.log("Error");
             }
         }
     }
-    async deleteAll(){
-        try{
+    async deleteAll() {
+        try {
             await fs.promises.writeFile(this.nombreDeArchivo, "[]");
             console.log("Borrado");
-        }catch (error){
+        } catch (error) {
             console.log("Error");
         }
     }
-    async save(objeto){
-        let array = this.getAll();
-        let idMax = 0;
-        array.forEach(e => {
-            if(e.id > idMax){
-                idMax = e.id;
+    async save(objeto) {
+        let array = await this.getAll();
+        if (array) {
+            let idMax = 0;
+            array.forEach((e) => {
+                if (e.id > idMax) {
+                    idMax = e.id;
+                }
+            });
+            let objetoAAgregar = Object.defineProperty(objeto, "id", {
+                value: idMax + 1,
+                writable: true,
+                enumerable: true,
+                configurable: true,
+            });
+            array.push(objetoAAgregar);
+            let pasarloAJSON = JSON.stringify(array);
+            try {
+                await fs.promises.writeFile(this.nombreDeArchivo, pasarloAJSON);
+                return objetoAAgregar.id;
+            } catch (error) {
+                console.log("Error");
             }
-        });
-        let objetoAAgregar = Object.defineProperty(objeto, "id",{
-            value: idMax+1,
-            writable: true,
-            enumerable: true,
-            configurable: true
-        });
-        array.push(objetoAAgregar);
-        let pasarloAJSON = JSON.stringify(array);
-        try{
-            await fs.promises.writeFile(this.nombreDeArchivo, pasarloAJSON);
-            return(objetoAAgregar.id);
-        } catch (error){
-            console.log("Error");
         }
     }
 }
+
 let animes = new Desafio2("archivo.txt");
-console.log("Anime obtenido por id:",animes.getById(3));
-console.log("Animes:",animes.getAll());
-//console.log("Id del anime agregado:",animes.save({title:"Boku No Hero Academia", mainCharacter:"Deku"}));
-//animes.deleteById(4);
-//animes.deleteAll();
+
+async function funcionMostrar () {
+    console.log(await animes.getAll());
+    console.log(await animes.getById(2));
+    console.log("Id del anime agregado:",await animes.save({ title: "Boku No Hero Academia", mainCharacter: "Deku" }));
+    console.log("Id del anime agregado:",await animes.save({ title: "Dragon Ball", mainCharacter: "Goku" }));
+    console.log(await animes.getAll());
+    await animes.deleteById(4);
+    console.log(await animes.getAll());
+    // await animes.deleteAll();
+    // console.log(await animes.getAll());
+}
+funcionMostrar()
+
+
