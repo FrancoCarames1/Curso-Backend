@@ -76,17 +76,54 @@ class Desafio2 {
 
 let animes = new Desafio2("archivo.txt");
 
-async function funcionMostrar () {
-    console.log(await animes.getAll());
-    console.log(await animes.getById(2));
-    console.log("Id del anime agregado:",await animes.save({ title: "Boku No Hero Academia", mainCharacter: "Deku" }));
-    console.log("Id del anime agregado:",await animes.save({ title: "Dragon Ball", mainCharacter: "Goku" }));
-    console.log(await animes.getAll());
-    await animes.deleteById(4);
-    console.log(await animes.getAll());
-    // await animes.deleteAll();
-    // console.log(await animes.getAll());
-}
-funcionMostrar()
+// async function funcionMostrar () {
+//     console.log(await animes.getAll());
+//     console.log(await animes.getById(2));
+//     console.log("Id del anime agregado:",await animes.save({ title: "Boku No Hero Academia", mainCharacter: "Deku" }));
+//     console.log("Id del anime agregado:",await animes.save({ title: "Dragon Ball", mainCharacter: "Goku" }));
+//     console.log(await animes.getAll());
+//     await animes.deleteById(4);
+//     console.log(await animes.getAll());
+//     // await animes.deleteAll();
+//     // console.log(await animes.getAll());
+// }
+// funcionMostrar()
 
+const express = require('express');
+
+const app = express();
+
+const PORT = 3000;
+
+app.get("/", (req, res, next) =>{
+    res.send('Hola mundo servidor express')
+});
+
+app.get("/productos", (req, res, next) =>{
+    async function todosLosProductos () {
+        let mostrar = await animes.getAll()
+        res.send(mostrar)
+    }
+    todosLosProductos()
+});
+
+app.get("/productoRandom", (req, res, next) =>{
+    let max = 6;
+    let min = 1;
+    function getRandomInt() {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+    let numeroRandom = getRandomInt()
+    async function productoAlAzar () {
+        let mostrar = await animes.getById(numeroRandom);
+        res.send(mostrar);
+    }
+    productoAlAzar()
+})
+
+const server = app.listen(PORT, () =>{
+    console.log("servidor puerto 3000")
+});
+
+server.on("error", error => console.log(`Error en servidos ${error}`));
 
