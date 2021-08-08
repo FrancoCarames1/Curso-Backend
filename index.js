@@ -108,14 +108,15 @@ app.get("/productos", (req, res, next) =>{
 });
 
 app.get("/productoRandom", (req, res, next) =>{
-    let max = 6;
-    let min = 1;
-    function getRandomInt() {
-        return Math.floor(Math.random() * (max - min)) + min;
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * (max));
     }
-    let numeroRandom = getRandomInt()
+
     async function productoAlAzar () {
-        let mostrar = await animes.getById(numeroRandom);
+        let todos = await animes.getAll();
+        let max = todos.length;
+        let numeroRandom = getRandomInt(max);
+        let mostrar = todos[numeroRandom];
         res.send(mostrar);
     }
     productoAlAzar()
