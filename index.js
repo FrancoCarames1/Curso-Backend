@@ -1,31 +1,22 @@
-const Desafio2 = require('./clase.js');
+const Desafio2 = require('./src/clase.js');
 
-let animes = new Desafio2('./archivo.txt');
-
-async function funcionMostrar () {
-//     console.log(await animes.getAll());
-//     console.log(await animes.getById(2));
-    console.log("Id del anime agregado:",await animes.save({ title: "Sword Art Online", mainCharacter: "Kirito" }));
-//     console.log("Id del anime agregado:",await animes.save({ title: "Dragon Ball", mainCharacter: "Goku" }));
-//     console.log(await animes.getAll());
-//     await animes.deleteById(4);
-//     console.log(await animes.getAll());
-//     // await animes.deleteAll();
-//     // console.log(await animes.getAll());
-}
-// funcionMostrar() //lo comento porque ya agregué un anime más para formatear el documento
+let animes = new Desafio2('./archivo.json');
 
 const express = require('express');
 
 const app = express();
 
-const PORT = 3000;
+const PORT = 8080;
 
-app.get("/", (req, res, next) =>{
-    res.send('Hola mundo servidor express')
-});
+const router = express.Router();
 
-app.get("/productos", (req, res, next) =>{
+app.use(express.json());
+
+app.use(express.static('public'));
+
+app.use('/api/productos', router);
+
+router.get("/", (req, res) =>{
     async function todosLosProductos () {
         let mostrar = await animes.getAll()
         res.send(mostrar)
@@ -33,24 +24,62 @@ app.get("/productos", (req, res, next) =>{
     todosLosProductos()
 });
 
-app.get("/productoRandom", (req, res, next) =>{
-    function getRandomInt(max) {
-        return Math.floor(Math.random() * (max));
+router.put("/:id", async (req, res) =>{
+
+    const {id} = req.params;
+
+    const {body} = req;
+
+    const preCambio = await animes.getById(parseInt(id));
+
+    const postCambio = await animes.updateById(parseInt(id), body);
+
+    if (preCambio) {
+
+        res.send({ postCambio });
+    
+    } else {
+    
+        res.send('El producto no fue encontrado, verificar si existe.')
     }
+})
+
+router.get("/:id", (req, res) =>{
+
+    const {id} = req.params;
 
     async function productoAlAzar () {
-        let todos = await animes.getAll();
-        let max = todos.length;
-        let numeroRandom = getRandomInt(max);
-        let mostrar = todos[numeroRandom];
+        mostrar = await animes.getById(parseInt(id))
         res.send(mostrar);
     }
     productoAlAzar()
 })
 
-const server = app.listen(PORT, () =>{
-    console.log("servidor puerto 3000")
+router.delete("/:id", (req, res) =>{
+
+    const {id} = req.params;
+
+    async function productoAlAzar () {
+        mostrar = await animes.deleteById(parseInt(id))
+        res.send(mostrar);
+    }
+    productoAlAzar()
+})
+
+app.listen(PORT, () =>{
+    console.log("servidor http://localhost:8080/")
 });
 
-server.on("error", error => console.log(`Error en servidos ${error}`));
+app.get('/server', (req, res) => {
+    res.send({server: 'Express'})
+})
+
+router.post('/', async (req, res) => {
+
+    const { body } = req;
+
+    await animes.save(body);
+
+    res.send(body)
+});
 

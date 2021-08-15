@@ -32,11 +32,7 @@ class Desafio2 {
         } else {
             array.splice(posicionAnimeBuscado, 1);
             let pasarloAJSON = JSON.stringify(array);
-            try {
-                await fs.promises.writeFile(this.nombreDeArchivo, pasarloAJSON);
-            } catch (error) {
-                console.log("Error");
-            }
+            await this.saveDocument(pasarloAJSON);
         }
     }
     async deleteAll() {
@@ -64,12 +60,34 @@ class Desafio2 {
             });
             array.push(objetoAAgregar);
             let pasarloAJSON = JSON.stringify(array,null, 2);
-            try {
-                await fs.promises.writeFile(this.nombreDeArchivo, pasarloAJSON);
-                return objetoAAgregar.id;
-            } catch (error) {
-                console.log("Error");
-            }
+            await this.saveDocument(pasarloAJSON);
+        }
+    }
+    async updateById(id, animeNuevo) {
+        let array = await this.getAll();
+
+        let posicionAnime = array.findIndex((anime) => anime.id === id);
+
+        if (posicionAnime === -1){
+            return ("No se encontró anime")
+        }else{
+
+            array[posicionAnime].title = animeNuevo.title;
+            array[posicionAnime].mainCharacter = animeNuevo.mainCharacter;
+
+            let pasarloAJSON = JSON.stringify(array);
+
+            await this.saveDocument(pasarloAJSON)
+
+            return (array[posicionAnime])
+        }
+    }
+    async saveDocument(animes){
+        try {
+            await fs.promises.writeFile(this.nombreDeArchivo, animes);
+        }
+        catch (error) {
+            console.log(error)
         }
     }
 }
