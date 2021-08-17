@@ -4,15 +4,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script type="text/javascript" src="./js/paraEnviar.js"></script>
+    <title>Desafío 4</title>
 </head>
 <body>
-    <h1>Anime nuevo</h1>
-    <label for="titulo">Titulo:</label><input type="text" name="titulo" id="titulo" placeholder="Attack on titan" required>
-    <br>
-    <label for="personajePrincipal">Personaje principal:</label><input type="text" name="personajePrincipal" id="personajePrincipal" placeholder="Levi" required>
-    <br>
-    <button onclick="nuevoAnime()">Enviar</button>
+    <form method="POST" action="/api/productos" id="formulario">
+        <label for="title">Título:</label>
+        <input type="text" name="title" id="title" placeholder="Attack on titan" required>
+        <label for="mainCharacter">Personaje principal:</label>
+        <input type="text" name="mainCharacter" id="mainCharacter" placeholder="Levi" required>
+        <input type="submit" value="Enviar">
+    </form>
+    <script>
+        document.getElementById('formulario').onsubmit = () =>{
+            let titulo = document.getElementById('title').value;
+            let personajePrincipal = document.getElementById('mainCharacter').value;
+            alert('Nuevo anime agregado: \n Título: ' + titulo + '\n Personaje Principal: ' + personajePrincipal);
+        }
+    </script>
 </body>
 </html>

@@ -80,6 +80,7 @@ router.post('/', async (req, res) => {
 
     await animes.save(body);
 
+    res
+
     res.send(body)
 });
-
